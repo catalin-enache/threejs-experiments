@@ -25,6 +25,8 @@
   let camera, scene, renderer, stats, object, loader, controls;
   let mixer;
 
+  const customCameraControls = true;
+
   const clock = new THREE.Clock();
 
   const params = {
@@ -87,9 +89,11 @@
     renderer.shadowMap.enabled = true;
     container.appendChild( renderer.domElement );
 
-    // controls = new OrbitControls( camera, renderer.domElement );
-    // controls.target.set( 0, 100, 0 );
-    // controls.update();
+    if (customCameraControls) {
+      controls = new OrbitControls( camera, renderer.domElement );
+      controls.target.set( 0, 100, 0 );
+      controls.update();
+    }
 
     window.addEventListener( 'resize', onWindowResize );
 
@@ -235,7 +239,12 @@
       scene,
       renderer,
       frameloop: 'always',
-      autoNavControls: true,
+      autoNavControls: !customCameraControls,
+      onTransformControlsDragging: (dragging) => {
+        if (controls) {
+          controls.enabled = !dragging;
+        }
+      },
       customParams,
       // onRender: animate,
       r3fThreeGetSet
