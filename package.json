@@ -18,7 +18,7 @@
     "react": "^19",
     "react-dom": "^19",
     "three": "0.175",
-    "threejs-inspector": "^0.0.52"
+    "threejs-inspector": "^0.0.54"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",
