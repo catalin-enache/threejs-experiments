@@ -1,28 +1,31 @@
-import * as THREE from 'three';
-import { ReactNode, StrictMode, useState, useEffect } from 'react';
-import { createRoot } from 'react-dom/client';
-import { Canvas } from '@react-three/fiber';
+import * as THREE from "three";
+import { ReactNode, StrictMode, useState, useEffect } from "react";
+import { createRoot } from "react-dom/client";
+import { Canvas } from "@react-three/fiber";
 // import { CameraControls as _CameraControls, OrbitControls as _OrbitControls } from '@react-three/drei';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { ExperienceSwitcher } from 'threejs-inspector/ExperienceSwitcher';
-import { Experience as DefaultExperience } from './scenarios/Experience';
-import { ProjectLongLatOnSphere } from './scenarios/ProjectLongLatOnSphere';
-import { Inspector } from 'threejs-inspector/inspector';
-import { extend } from '@react-three/fiber';
-import { default as api, type AppStore } from 'threejs-inspector/api';
-import './main.css';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { ExperienceSwitcher } from "threejs-inspector/ExperienceSwitcher";
+import { Experience as DefaultExperience } from "./scenarios/Experience";
+import { ProjectLongLatOnSphere } from "./scenarios/ProjectLongLatOnSphere";
+import { Inspector } from "threejs-inspector/inspector";
+import { extend } from "@react-three/fiber";
+import { default as api, type AppStore } from "threejs-inspector/api";
+import "./main.css";
+
+import { projects } from "./projects";
+api.setProjects(projects);
 
 extend({ OrbitControls });
 
 const experiences = [
   {
-    name: 'Default Experience',
-    Experience: DefaultExperience
+    name: "Default Experience",
+    Experience: DefaultExperience,
   },
   {
-    name: 'Project Long/Lat on Sphere',
-    Experience: ProjectLongLatOnSphere
-  }
+    name: "Project Long/Lat on Sphere",
+    Experience: ProjectLongLatOnSphere,
+  },
 ];
 
 // const experiences = [
@@ -37,35 +40,40 @@ const experiences = [
 // ];
 
 const params = {
-  asset: 'two'
+  asset: "two",
 };
-const assets = ['one', 'two', 'three'];
+const assets = ["one", "two", "three"];
 
 // TODO: Note, these custom params are merged with custom params from Experience scenario
 const customParams = {
   asset: {
     object: params,
-    prop: 'asset',
+    prop: "asset",
     control: {
-      label: 'Asset',
+      label: "Asset",
       options: assets.reduce((acc, asset) => {
         acc[asset] = asset;
         return acc;
       }, {} as any),
       onChange: (value: string) => {
-        console.log('onChange', value);
-      }
-    }
-  }
+        console.log("onChange", value);
+      },
+    },
+  },
 };
 
-const glOptions = { antialias: true, precision: 'highp' };
+const glOptions = { antialias: true, precision: "highp" };
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0xa0a0a0, 2, 100);
 
 const cameraPosition = new THREE.Vector3(0, 0, 12);
-const camera1 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera1 = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000,
+);
 camera1.position.copy(cameraPosition);
 
 const camera2 = new THREE.OrthographicCamera(
@@ -74,7 +82,7 @@ const camera2 = new THREE.OrthographicCamera(
   window.innerHeight / 2,
   window.innerHeight / -2,
   0.1,
-  1000
+  1000,
 );
 camera2.position.copy(cameraPosition);
 camera2.zoom = 45;
@@ -88,15 +96,19 @@ export function App(props: AppProps) {
   const { children } = props;
 
   const customCameraControls = false;
-  const [camera, setCamera] = useState<THREE.PerspectiveCamera | THREE.OrthographicCamera>(camera1);
+  const [camera, setCamera] = useState<
+    THREE.PerspectiveCamera | THREE.OrthographicCamera
+  >(camera1);
   const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
-  const [isDraggingTransformControls, setIsDraggingTransformControls] = useState(false);
+  const [isDraggingTransformControls, setIsDraggingTransformControls] =
+    useState(false);
   const initialPlayingState = api.getPlayingState();
-  const [playingState, setPlayingState] = useState<AppStore['playingState']>(initialPlayingState);
+  const [playingState, setPlayingState] =
+    useState<AppStore["playingState"]>(initialPlayingState);
 
   useEffect(() => {
     const keysListener = (event: KeyboardEvent) => {
-      if (event.code === 'KeyC') {
+      if (event.code === "KeyC") {
         if (camera === camera1) {
           setCamera(camera2);
         } else {
@@ -104,9 +116,9 @@ export function App(props: AppProps) {
         }
       }
     };
-    window.addEventListener('keydown', keysListener);
+    window.addEventListener("keydown", keysListener);
     return () => {
-      window.removeEventListener('keydown', keysListener);
+      window.removeEventListener("keydown", keysListener);
     };
   }, [camera]);
 
@@ -114,21 +126,21 @@ export function App(props: AppProps) {
     <Canvas
       camera={camera}
       scene={scene}
-      shadows={'soft'}
+      shadows={"soft"}
       gl={(defaultProps) => {
         const _renderer =
           renderer ??
           new THREE.WebGLRenderer({
             ...defaultProps,
-            ...glOptions
+            ...glOptions,
           });
         !renderer && setRenderer(() => _renderer);
         return _renderer;
       }}
-      frameloop={'always'}
+      frameloop={"always"}
     >
       <Inspector
-        autoNavControls={customCameraControls ? 'never' : 'whenStopped'}
+        autoNavControls={customCameraControls ? "never" : "whenStopped"}
         customParams={customParams}
         showInspector={true}
         showGizmos={true}
@@ -143,7 +155,10 @@ export function App(props: AppProps) {
       {renderer && (
         <orbitControls
           args={[camera, renderer.domElement]}
-          enabled={!isDraggingTransformControls && (customCameraControls || playingState !== 'stopped')}
+          enabled={
+            !isDraggingTransformControls &&
+            (customCameraControls || playingState !== "stopped")
+          }
           enableDamping={false}
         />
       )}
@@ -154,7 +169,7 @@ export function App(props: AppProps) {
 
 const useStrictMode = true;
 
-createRoot(document.getElementById('main') as HTMLElement).render(
+createRoot(document.getElementById("main") as HTMLElement).render(
   useStrictMode ? (
     <StrictMode>
       <App>
@@ -167,5 +182,5 @@ createRoot(document.getElementById('main') as HTMLElement).render(
       {/*<ProjectLongLatOnSphere />*/}
       <ExperienceSwitcher experiences={experiences} />
     </App>
-  )
+  ),
 );

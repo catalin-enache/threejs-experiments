@@ -1,11 +1,17 @@
 /// <reference types="threejs-inspector/tsExtensions" />
+
 import { StrictMode, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { ExperienceSwitcher } from "threejs-inspector/ExperienceSwitcher";
+import api from "threejs-inspector/api";
 // import { Experience as DefaultExperience } from './scenarios/Experience';
 // import { ProjectLongLatOnSphere } from './scenarios/ProjectLongLatOnSphere';
 import { App } from "./App";
+
 import "./main.css";
+
+import { projects } from "./projects";
+api.setProjects(projects);
 
 // const Experience = DefaultExperience;
 
