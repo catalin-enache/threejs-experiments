@@ -118,7 +118,7 @@
 
   function loadAsset( asset ) {
 
-    loader.load( '/models/FromThreeRepo/fbx/' + asset + '.fbx', function ( group ) {
+    loader.load( 'models/FromThreeRepo/fbx/' + asset + '.fbx', function ( group ) {
 
       if ( object ) {
 
@@ -262,11 +262,11 @@
       showInspector: true,
       showGizmos: true,
       useTransformControls: true,
-      onRender: () => {
-        // console.log('Render called');
-      },
       onPlay: () => {
-        // console.log('Play called');
+        // console.log('Play triggered');
+      },
+      onRender: () => {
+        // console.log('Render triggered');
       },
       onTransformControlsDragging: (dragging) => {
         const enabled = controls.enabled;
