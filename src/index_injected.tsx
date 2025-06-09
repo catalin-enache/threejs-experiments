@@ -7,6 +7,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { ExperienceSwitcher } from "threejs-inspector/ExperienceSwitcher";
 import { Experience as DefaultExperience } from "./scenarios/Experience";
 import { ProjectLongLatOnSphere } from "./scenarios/ProjectLongLatOnSphere";
+import { MaterialTest } from "./scenarios/MaterialTest";
+
 import { Inspector } from "threejs-inspector/inspector";
 import { extend } from "@react-three/fiber";
 import { default as api, type AppStore } from "threejs-inspector/api";
@@ -19,7 +21,11 @@ extend({ OrbitControls });
 
 const experiences = [
   {
-    name: "Default Experience",
+    name: "Material Test",
+    Experience: MaterialTest,
+  },
+  {
+    name: "Default",
     Experience: DefaultExperience,
   },
   {

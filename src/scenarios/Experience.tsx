@@ -1,26 +1,25 @@
-import * as THREE from 'three';
-import { useEffect, useRef, useState, memo } from 'react';
-import { ThreeElements, useThree } from '@react-three/fiber';
+import * as THREE from "three";
+import { useEffect, useRef, useState, memo } from "react";
+import { ThreeElements, useThree } from "@react-three/fiber";
 // @ts-ignore
-import { CustomControl } from 'threejs-inspector/CustomControl';
-import { usePlay, useStats } from 'threejs-inspector/hooks';
-import { TestIndexedCube3Materials } from './stuff/TestIndexedCube3Materials';
+import { CustomControl } from "threejs-inspector/CustomControl";
+import { usePlay, useStats } from "threejs-inspector/hooks";
+import { TestIndexedCube3Materials } from "./stuff/TestIndexedCube3Materials";
 // import { TestMorphTargets } from './TestMorphTargets';
 // @ts-ignore
-import { LightProbeGenerator } from 'three/examples/jsm/lights/LightProbeGenerator';
+import { LightProbeGenerator } from "three/examples/jsm/lights/LightProbeGenerator";
 // import { getShadowMapMaterial } from 'src/lib/utils/customShaders';
-import api from 'threejs-inspector/api';
-
+import api from "threejs-inspector/api";
 
 const degToRad = THREE.MathUtils.degToRad;
 
 // const shadowMapMaterial = getShadowMapMaterial();
 // @ts-ignore
 function Box(
-  props: ThreeElements['mesh'] & {
+  props: ThreeElements["mesh"] & {
     mapURL: string;
     alphaMapURL?: string;
-  }
+  },
 ) {
   const refMesh = useRef<THREE.Mesh>(null!);
   const [hovered, _hover] = useState(false);
@@ -31,11 +30,11 @@ function Box(
   const { position = [0, 0, 0], mapURL, alphaMapURL, ...rest } = props;
   usePlay((playingState, _state, delta) => {
     // console.log('Box usePlay', { playingState, _state, delta });
-    if (playingState === 'playing') {
+    if (playingState === "playing") {
       refMesh.current && (refMesh.current.rotation.x += delta);
       // refMesh.current.position.x = Math.sin(Date.now() / 1000);
       // refMesh?.current && (refMesh.current.position.z = 2);
-    } else if (playingState === 'stopped') {
+    } else if (playingState === "stopped") {
       refMesh.current && (refMesh.current.rotation.x = 0);
     }
   });
@@ -47,17 +46,21 @@ function Box(
     // 'textures/checkerboard-8x8.png',
     // 'textures/castle_brick_02_red_nor_gl_4k.exr',
     // 'textures/sikqyan_2K_Displacement.exr',
-    api.createTexturesFromImages(mapURL, { material: meshMaterialRef }).then((textures) => {
-      const map = textures[0];
-      // console.log('setting map');
-      setMap(map);
-    });
+    api
+      .createTexturesFromImages(mapURL, { material: meshMaterialRef })
+      .then((textures) => {
+        const map = textures[0];
+        // console.log('setting map');
+        setMap(map);
+      });
     alphaMapURL &&
-    api.createTexturesFromImages(alphaMapURL, { material: meshMaterialRef }).then((textures) => {
-      const map = textures[0];
-      // console.log('setting alphaMap');
-      setAlphaMap(map);
-    });
+      api
+        .createTexturesFromImages(alphaMapURL, { material: meshMaterialRef })
+        .then((textures) => {
+          const map = textures[0];
+          // console.log('setting alphaMap');
+          setAlphaMap(map);
+        });
   }, [mapURL, alphaMapURL]);
 
   return (
@@ -74,7 +77,7 @@ function Box(
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial
         ref={meshMaterialRef}
-        color={hovered ? 'hotpink' : 'white'}
+        color={hovered ? "hotpink" : "white"}
         map={map}
         alphaMap={alphaMap}
         roughness={0}
@@ -118,14 +121,14 @@ export const Experience = memo(function Experience() {
       // format: THREE.RGBAFormat
       // generateMipmaps: true
       // depthTexture: new THREE.DepthTexture(512, 512)
-    })
+    }),
   );
 
   const customPropsRef = useRef({
     myImage: null,
     myBool: false,
     myNumber: 0.23,
-    myPoint: { x: 0.5, y: 0.5 }
+    myPoint: { x: 0.5, y: 0.5 },
   });
 
   // const [myImage, setMyImage] = useState<any>(null);
@@ -134,7 +137,9 @@ export const Experience = memo(function Experience() {
   const [customControlXY, setCustomControlXY] = useState({ x: 0.5, y: 0.5 });
   // @ts-ignore
   const [number, setNumber] = useState(1.23);
-  const audioListenerRef = useRef<THREE.AudioListener>(new THREE.AudioListener());
+  const audioListenerRef = useRef<THREE.AudioListener>(
+    new THREE.AudioListener(),
+  );
 
   usePlay(
     (_playState, _rootState, _delta) => {
@@ -160,7 +165,7 @@ export const Experience = memo(function Experience() {
       }
     },
     0,
-    [showOthers]
+    [showOthers],
   );
 
   usePlay((_state, _rootState, _delta) => {
@@ -177,9 +182,15 @@ export const Experience = memo(function Experience() {
     if (initialisedRef.current) return;
     api
       .createTexturesFromImages(
-        ['alpha.jpg', 'ao.jpg', 'color.jpg', 'height.jpg', 'metalness.jpg', 'normal.jpg', 'roughness.jpg'].map(
-          (img) => `textures/pbr/door/${img}`
-        )
+        [
+          "alpha.jpg",
+          "ao.jpg",
+          "color.jpg",
+          "height.jpg",
+          "metalness.jpg",
+          "normal.jpg",
+          "roughness.jpg",
+        ].map((img) => `textures/pbr/door/${img}`),
       )
       .then((textures) => {
         if (!doorMaterialRef.current) return;
@@ -214,7 +225,10 @@ export const Experience = memo(function Experience() {
     // ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((t) => `textures/background/cube/skyboxsun25deg/${t}.jpg`)
     // ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map((t) => `textures/background/cube/pisa/${t}.png`)
     api
-      .createTexturesFromImages('textures/background/equirectangular/spruit_sunrise_4k.hdr.jpg', {})
+      .createTexturesFromImages(
+        "textures/background/equirectangular/spruit_sunrise_4k.hdr.jpg",
+        {},
+      )
       .then((textures) => {
         // console.log('createTextureFromImages', textures);
         const texture = textures[0];
@@ -228,8 +242,10 @@ export const Experience = memo(function Experience() {
         texture.needsUpdate = true;
         // texture.colorSpace = THREE.SRGBColorSpace;
         if (refLightProbe.current && texture instanceof THREE.CubeTexture) {
-          refLightProbe.current.copy(LightProbeGenerator.fromCubeTexture(texture));
-          refLightProbe.current.name = 'myLightProbe';
+          refLightProbe.current.copy(
+            LightProbeGenerator.fromCubeTexture(texture),
+          );
+          refLightProbe.current.name = "myLightProbe";
           // refLightProbe.current.position.set(0, 0, 3);
           refLightProbe.current.intensity = 1;
         }
@@ -291,16 +307,23 @@ export const Experience = memo(function Experience() {
         // models/NonFree/Dark Elf Blader - Game Ready/Assets/Textures/DarkElfBlader_FBX_From3DsMax.fbx
         // models/Free/gltf/Mixamo/Jennifer/Jennifer.glb
         api
-          .loadObject(['Jennifer.glb', 'Animations_gltf/Idle.glb', 'Animations_gltf/Catwalk_Walk_Forward.glb'], {
-            // api.loadObject(['Samba Dancing.fbx'], {
-            // api.loadObject(['coffeemat.glb'], {
-            scene,
-            camera,
-            autoScaleRatio: 0.4,
-            path: 'models/Free/gltf/Mixamo/Jennifer/'
-            // path: 'models/FromThreeRepo/fbx/'
-            // path: 'models/FromThreeRepo/gltf_glb/'
-          })
+          .loadObject(
+            [
+              "Jennifer.glb",
+              "Animations_gltf/Idle.glb",
+              "Animations_gltf/Catwalk_Walk_Forward.glb",
+            ],
+            {
+              // api.loadObject(['Samba Dancing.fbx'], {
+              // api.loadObject(['coffeemat.glb'], {
+              scene,
+              camera,
+              autoScaleRatio: 0.4,
+              path: "models/Free/gltf/Mixamo/Jennifer/",
+              // path: 'models/FromThreeRepo/fbx/'
+              // path: 'models/FromThreeRepo/gltf_glb/'
+            },
+          )
           .then((mesh) => {
             if (!mesh) return;
             mesh.__inspectorData.isInspectable = true;
@@ -322,7 +345,10 @@ export const Experience = memo(function Experience() {
 
         const testIndexedCube3Materials = TestIndexedCube3Materials();
         // const testMorphTargets = TestMorphTargets();
-        const recombinedCube = api.splitMeshesByMaterial(testIndexedCube3Materials, {});
+        const recombinedCube = api.splitMeshesByMaterial(
+          testIndexedCube3Materials,
+          {},
+        );
         recombinedCube.castShadow = true;
         recombinedCube.receiveShadow = true;
         // testIndexedCube3Materials.position.set(0, 0, 0);
@@ -367,19 +393,19 @@ export const Experience = memo(function Experience() {
           scale={1}
           intensity={4.5}
           ref={refDirectionalLight}
-          color={'white'}
+          color={"white"}
           __inspectorData={{ isInspectable: false }}
-        ></directionalLight>
+        />
         <hemisphereLight
           // args={[0xffffff, 0xffffff, 2]}
           intensity={2}
           color={new THREE.Color().setHSL(0.6, 1, 0.6)}
           groundColor={new THREE.Color().setHSL(0.095, 1, 0.75)}
         />
-        <ambientLight color={'#ffffff'} intensity={3.5} position={[0, 1, 0]} />
+        <ambientLight color={"#ffffff"} intensity={3.5} position={[0, 1, 0]} />
         {/* rectAreaLight (RectAreaLightUniformsLib) gives 2 textures that cannot be disposed */}
         <rectAreaLight
-          color={'deepskyblue'}
+          color={"deepskyblue"}
           position={[-3, 0, -8]}
           rotation={[-2.51, 0, 0]}
           intensity={6}
@@ -390,7 +416,7 @@ export const Experience = memo(function Experience() {
           castShadow
           // shadow-mapSize={[2048, 2048]}
           position={[0, -2, 0]}
-          color={'orange'}
+          color={"orange"}
           // decay={0}
           scale={1}
           intensity={Math.PI}
@@ -412,7 +438,12 @@ export const Experience = memo(function Experience() {
           ref={refSpotLight}
         ></spotLight>
 
-        <lightProbe ref={refLightProbe} color={'blue'} position={[0, 0, 3]} name={'myLightProbe'} />
+        <lightProbe
+          ref={refLightProbe}
+          color={"blue"}
+          position={[0, 0, 3]}
+          name={"myLightProbe"}
+        />
       </group>
 
       <Box
@@ -533,69 +564,72 @@ export const Experience = memo(function Experience() {
       />
 
       <CustomControl
-        name={'myBool'}
+        name={"myBool"}
         object={customPropsRef.current}
-        prop={'myBool'}
+        prop={"myBool"}
         control={{
-          label: 'My Bool',
+          label: "My Bool",
           onChange: (value: boolean) => {
             setShowOthers(value);
-          }
+          },
         }}
       />
       <CustomControl
-        name={'myBool_2'}
+        name={"myBool_2"}
         object={customPropsRef.current}
-        prop={'myBool'}
+        prop={"myBool"}
         control={{
-          label: 'My Bool',
+          label: "My Bool",
           onChange: (value: boolean) => {
             setShowOthers(value);
-          }
+          },
         }}
       />
       {showOthers && (
         <>
           <CustomControl
-            name={'SceneBG'}
+            name={"SceneBG"}
             object={scene}
-            prop={'background'}
+            prop={"background"}
             control={{
-              label: 'Texture',
+              label: "Texture",
               gl,
-              color: { type: 'float' },
+              color: { type: "float" },
               onChange: (...args: any[]) => {
-                console.log('Experience reacting to SceneBG value change', args);
-              }
+                console.log(
+                  "Experience reacting to SceneBG value change",
+                  args,
+                );
+              },
             }}
           />
           <CustomControl
             name="myNumber"
             object={customPropsRef.current}
-            prop={'myNumber'}
+            prop={"myNumber"}
             control={{
-              label: 'My Number',
+              label: "My Number",
               step: 0.01,
               keyScale: 0.1,
               pointerScale: 0.01,
               onChange: (value: number) => {
                 customPropsRef.current.myPoint.x = value;
-              }
+              },
             }}
           />
           <CustomControl
             name="myPoint"
             object={customPropsRef.current}
-            prop={'myPoint'}
+            prop={"myPoint"}
             control={{
-              label: 'Point',
+              label: "Point",
               step: 0.01,
               keyScale: 0.1,
               pointerScale: 0.01,
               onChange: (value: any) => {
                 setCustomControlXY({ ...value });
                 customPropsRef.current.myNumber = value.x;
-              }
+              },
             }}
           />
         </>
